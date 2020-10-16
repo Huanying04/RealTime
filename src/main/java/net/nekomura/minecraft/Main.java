@@ -6,13 +6,13 @@ import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 public class Main extends JavaPlugin {
@@ -34,7 +34,7 @@ public class Main extends JavaPlugin {
                     return true;
                 }else if (args[0].equals("settimezone")) {
                     if (args.length >= 2) {
-                        String oldTimezone = this.getConfig().get("timezone").toString();
+                        String oldTimezone = this.getConfig().getString("timezone");
                         String newTimezone = args[1];
                         String[] availableTimezone = TimeZone.getAvailableIDs();
                         boolean isAvailableTimezone;
@@ -72,9 +72,13 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
-            for (World world: Bukkit.getWorlds()) {
+            List<String> worlds = Main.super.getConfig().getStringList("world");
+            for (String worldName: worlds) {
+                World world = Bukkit.getWorld(worldName);
+                if (world == null)
+                    continue;
                 world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
-                String timezone = Main.super.getConfig().get("timezone").toString();
+                String timezone = Main.super.getConfig().getString("timezone");
 
                 Calendar c = Calendar.getInstance();
                 c.setTimeZone(TimeZone.getTimeZone(timezone));
