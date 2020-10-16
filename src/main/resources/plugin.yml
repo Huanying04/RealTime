@@ -1,0 +1,17 @@
+name: RealTime
+main: net.nekomura.minecraft.Main
+version: 1.0.0.0
+description: Set Minecraft Time as Real Current Time.
+author: Nekomura Huanying
+
+commands:
+  realtime:
+    aliases: [rt]
+    description: plugin introduce
+
+permissions:
+  realtime.*:
+    children:
+      realtime.admin: true
+  realtime.admin:
+    default: op
