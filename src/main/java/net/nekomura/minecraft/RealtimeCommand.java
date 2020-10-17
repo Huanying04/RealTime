@@ -30,15 +30,7 @@ public class RealtimeCommand implements CommandExecutor {
                 //重新載入config檔案
                 Main.plugin.reloadConfig();
                 String newTimezone = Main.plugin.getConfig().getString("timezone");
-                if (TimezoneUtils.isLowerDay(oldTimezone, newTimezone)) {
-                    for (String worldName: Main.plugin.getConfig().getStringList("world")) {
-                        World world = Bukkit.getWorld(worldName);
-                        //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
-                        if (world == null)
-                            continue;
-                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000);
-                    }
-                }else if (TimezoneUtils.isGreaterDay(oldTimezone, newTimezone)) {
+                if (TimezoneUtils.isLowerDay(oldTimezone, newTimezone) || TimezoneUtils.isGreaterDay(oldTimezone, newTimezone)) {
                     for (String worldName: Main.plugin.getConfig().getStringList("world")) {
                         World world = Bukkit.getWorld(worldName);
                         //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
@@ -71,15 +63,7 @@ public class RealtimeCommand implements CommandExecutor {
                                 Main.plugin.getConfig().set("timezone", newTimezone);
                                 //儲存config
                                 Main.plugin.saveConfig();
-                                if (TimezoneUtils.isLowerDay(oldTimezone, newTimezone)) {
-                                    for (String worldName: Main.plugin.getConfig().getStringList("world")) {
-                                        World world = Bukkit.getWorld(worldName);
-                                        //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
-                                        if (world == null)
-                                            continue;
-                                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000);
-                                    }
-                                }else if (TimezoneUtils.isGreaterDay(oldTimezone, newTimezone)) {
+                                if (TimezoneUtils.isLowerDay(oldTimezone, newTimezone) || TimezoneUtils.isGreaterDay(oldTimezone, newTimezone)) {
                                     for (String worldName: Main.plugin.getConfig().getStringList("world")) {
                                         World world = Bukkit.getWorld(worldName);
                                         //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
@@ -99,9 +83,11 @@ public class RealtimeCommand implements CommandExecutor {
                         return true;
                     }else if (args[1].equals("get")) {
                         sender.sendMessage("現在的時區為" + Main.plugin.getConfig().getString("timezone"));
+                        return true;
                     }
                 }else {
                     sender.sendMessage("用法: /realtime timezone set <args> 或 /realtime timezone get");
+                    return true;
                 }
             }
         }
