@@ -8,6 +8,8 @@ commands:
   realtime:
     aliases: [rt]
     description: plugin introduce
+  gettime:
+
 
 permissions:
   realtime.*:
