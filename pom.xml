@@ -6,7 +6,7 @@
 
     <groupId>net.nekomura.minecraft</groupId>
     <artifactId>RealTime</artifactId>
-    <version>1.0.1.0</version>
+    <version>1.0.1.1</version>
     <build>
         <plugins>
             <plugin>
@@ -38,11 +38,6 @@
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>13.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.json</groupId>
-            <artifactId>json</artifactId>
-            <version>20200518</version>
         </dependency>
     </dependencies>
 

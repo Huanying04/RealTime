@@ -3,13 +3,15 @@ main: net.nekomura.minecraft.Main
 version: 1.0.0.0
 description: Set Minecraft Time as Real Current Time.
 author: Nekomura Huanying
+softdepend: [PlaceholderAPI]
 
 commands:
   realtime:
     aliases: [rt]
+    usage: /realtime <args>
     description: plugin introduce
   gettime:
-
+    usage: /gettime
 
 permissions:
   realtime.*:

@@ -1,84 +1,56 @@
 package net.nekomura.minecraft;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
-import java.time.DateTimeException;
-import java.time.ZoneId;
 import java.util.*;
 
 public class Main extends JavaPlugin {
 
-    static Map<World, Boolean> addDay = new HashMap<World, Boolean>();
+    public static JavaPlugin plugin;
+    static Map<World, Boolean> addDay = new HashMap<>();
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (label.equals("realtime")) {  // 指令 realtime
-            if (!sender.hasPermission("realtime.admin")) {  //如果沒有realtime.admin權限
-                sender.sendMessage(ChatColor.RED + "你沒有使用此指令的權限。");
-                return true;
-            }else {  //有realtime.admin權限
-                if (args.length == 0) {  //如果args長度為零，也就是指令只有/realtime
-                    //發給sender簡介
-                    sender.sendMessage(ChatColor.WHITE + "" + ChatColor.BOLD + "RealTime"
-                    + ChatColor.GOLD + ">>>" + ChatColor.AQUA + "\nMADE BY: 貓村幻影");
-                    return true;
-                }else if (args[0].equals("reload")) {  //如果指令是/realtime reload
-                    //重新載入config檔案
-                    this.reloadConfig();
-                    sender.sendMessage("reload完畢！");
-                    return true;
-                }else if (args[0].equals("settimezone")) {  //如果指令是/realtime timezone ...
-                    if (args.length >= 2) {  //如果args(指令參數)大於等於2
-                        String oldTimezone = this.getConfig().getString("timezone");  //獲取config裡的舊時區
-                        String newTimezone = args[1];  //獲取欲設定的新時區
-                        //雙重驗證是否為可用時區
-                        String[] availableTimezone = TimeZone.getAvailableIDs();
-                        boolean isAvailableTimezone;
-
-                        try {
-                            ZoneId.of(newTimezone);
-                            isAvailableTimezone = true;
-                        }catch (DateTimeException e) {
-                            isAvailableTimezone = false;
-                        }
-
-                        if (isAvailableTimezone || Arrays.asList(availableTimezone).contains(newTimezone)) {  //是可用時區
-                            //設定config的新的timezone
-                            this.getConfig().set("timezone", newTimezone);
-                            //儲存config
-                            this.saveConfig();
-                            //發送message給sender
-                            sender.sendMessage(String.format("已將時區由%s改為%s！", oldTimezone, newTimezone));
-                        }else {  //不是可用時區
-                            sender.sendMessage(ChatColor.RED + "錯誤的時區！");
-                        }
-                    }else {  //args(指令參數)沒有大於等於2(相當於小於2 )
-                        sender.sendMessage(ChatColor.RED + "用法: /realtime settimezone <時區>");
-                    }
-                    return true;
-                }else if (args[0].equals("gettimezone")) {
-                    sender.sendMessage("現在的時區為" + this.getConfig().getString("timezone"));
-                }
-            }
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (label.equals("gettime")) {
+            Player player = (Player)sender;
+            player.sendMessage("time: " + player.getWorld().getTime() + "\n" +
+                    "full time: " + player.getWorld().getFullTime());
         }
+        getCommand("realtime").setExecutor(new RealtimeCommand());
         return false;
     }
 
     @Override
-    public void onDisable() {
-        super.onDisable();
+    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, @NotNull String[] args) {
+        if (command.getName().equalsIgnoreCase("realtime") || command.getName().equalsIgnoreCase("rt")) {
+            if (args.length == 1) {
+                String[] list = {"reload", "timezone"};
+                return Arrays.asList(list);
+            }
+            if (args.length == 2) {
+                if (args[0].equalsIgnoreCase("timezone")) {
+                    String[] list = {"set", "get"};
+                    return Arrays.asList(list);
+                }
+            }
+        }
+        return null;
     }
 
     @Override
     public void onEnable() {
+        plugin = this;
         this.saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+
+        }
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             //獲取config文件中的需要同步時間的世界名稱
             List<String> worlds = Main.super.getConfig().getStringList("world");
@@ -131,12 +103,6 @@ public class Main extends JavaPlugin {
 
                 //將新的時間設定為現在完整時間(可慮日)加上現在相對時間(不可慮日)的時間變化
                 long newFullTime = nowFullTime + time - nowTime;
-
-                if (newFullTime - nowFullTime > 18000) {
-                    newFullTime -= 24000;
-                }else if (newFullTime - nowFullTime < -18000) {
-                    newFullTime += 24000;
-                }
 
                 //設定時間
                 world.setFullTime(newFullTime);
