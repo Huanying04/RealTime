@@ -15,11 +15,13 @@
 顯示插件簡介
 ### /realtime reload
 Reload插件。
-### /realtime settimezone <時區名稱>
+### /realtime timezone set <時區名稱>
 設定時區位置。
 #### 使用方法範例：
-**/realtime settimezone GMT+8** - 將時區設定為GMT+8。
+**/realtime timezone set GMT+8** - 將時區設定為GMT+8。
 
-**/realtime settimezone JST** - 將時區設定為JST。
+**/realtime timezone set JST** - 將時區設定為JST。
 
-**/realtime settimezone Asia/Taipei** - 將時區設定為Asia/Taipei。
+**/realtime timezone set Asia/Taipei** - 將時區設定為Asia/Taipei。
+### /realtime timezone get
+顯示現在設定的時區。
