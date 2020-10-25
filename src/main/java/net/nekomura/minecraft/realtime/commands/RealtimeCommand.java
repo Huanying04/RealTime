@@ -1,19 +1,25 @@
-package net.nekomura.minecraft;
+package net.nekomura.minecraft.realtime.commands;
 
+import net.nekomura.minecraft.realtime.Main;
+import net.nekomura.minecraft.realtime.TimezoneUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.TimeZone;
 
-public class RealtimeCommand implements CommandExecutor {
+public class RealtimeCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("realtime.admin")) {  //如果沒有realtime.admin權限
@@ -92,5 +98,26 @@ public class RealtimeCommand implements CommandExecutor {
             }
         }
         return false;
+    }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (args.length >= 3) {
+            return Collections.emptyList();
+        }
+        if (args.length == 2) {
+            if (args[0].equalsIgnoreCase("timezone")) {
+                String[] list = {"set", "get"};
+                return Arrays.asList(list);
+            }else if (args[0].equalsIgnoreCase("reload")) {
+                return Collections.emptyList();
+            }
+        }
+        if (args.length == 1) {
+            String[] list = {"reload", "timezone"};
+            return Arrays.asList(list);
+        }
+        return null;
     }
 }

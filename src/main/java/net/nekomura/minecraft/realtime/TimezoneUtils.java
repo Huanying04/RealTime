@@ -1,4 +1,4 @@
-package net.nekomura.minecraft;
+package net.nekomura.minecraft.realtime;
 
 import java.util.Calendar;
 import java.util.TimeZone;

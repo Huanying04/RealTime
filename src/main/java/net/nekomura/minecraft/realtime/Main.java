@@ -1,5 +1,7 @@
-package net.nekomura.minecraft;
+package net.nekomura.minecraft.realtime;
 
+import net.nekomura.minecraft.realtime.commands.GetTimeCommand;
+import net.nekomura.minecraft.realtime.commands.RealtimeCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -17,35 +19,9 @@ public class Main extends JavaPlugin {
     static Map<World, Boolean> addDay = new HashMap<>();
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (label.equals("gettime")) {
-            Player player = (Player)sender;
-            player.sendMessage("time: " + player.getWorld().getTime() + "\n" +
-                    "full time: " + player.getWorld().getFullTime());
-        }
-        getCommand("realtime").setExecutor(new RealtimeCommand());
-        return false;
-    }
-
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, Command command, @NotNull String alias, @NotNull String[] args) {
-        if (command.getName().equalsIgnoreCase("realtime") || command.getName().equalsIgnoreCase("rt")) {
-            if (args.length == 1) {
-                String[] list = {"reload", "timezone"};
-                return Arrays.asList(list);
-            }
-            if (args.length == 2) {
-                if (args[0].equalsIgnoreCase("timezone")) {
-                    String[] list = {"set", "get"};
-                    return Arrays.asList(list);
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void onEnable() {
+        Objects.requireNonNull(getCommand("realtime")).setExecutor(new RealtimeCommand());
+        Objects.requireNonNull(getCommand("gettime")).setExecutor(new GetTimeCommand());
         plugin = this;
         this.saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
@@ -107,6 +83,6 @@ public class Main extends JavaPlugin {
                 //設定時間
                 world.setFullTime(newFullTime);
             }
-        }, 0L, 1L);  //20L相當於20tick，也就是每秒執行一次
+        }, 0L, 5L);  //1相當於1tick(1/20 sec)
     }
 }

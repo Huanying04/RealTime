@@ -1,21 +1,27 @@
 name: RealTime
-main: net.nekomura.minecraft.Main
-version: 1.0.0.0
+main: net.nekomura.minecraft.realtime.Main
+version: 1.0.1.2
 description: Set Minecraft Time as Real Current Time.
-author: Nekomura Huanying
+author: 貓村幻影
 softdepend: [PlaceholderAPI]
 
 commands:
   realtime:
     aliases: [rt]
-    usage: /realtime <args>
+    usage: 'Usage: /realtime <args>'
     description: plugin introduce
+    permission: realtime.gettime
   gettime:
     usage: /gettime
+    permission: realtime.admin
 
 permissions:
   realtime.*:
     children:
       realtime.admin: true
   realtime.admin:
+    default: op
+    children:
+      realtime.gettime: true
+  realtime.gettime:
     default: op
