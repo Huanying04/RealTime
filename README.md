@@ -1,4 +1,6 @@
 這個Minecraft插件可以使你的Minecraft遊戲時間與世界時間同步！
+
+巴哈上的文: https://forum.gamer.com.tw/C.php?bsn=18673&snA=187185&tnum=4&subbsn=14
 # 使用方法
 將插件的jar檔放至伺服器的plugins資料夾即可。
 ![folder](https://truth.bahamut.com.tw/s01/202010/ecca15193f6781bdebf2262609fa387b.PNG)
