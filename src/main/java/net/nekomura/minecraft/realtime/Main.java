@@ -5,11 +5,7 @@ import net.nekomura.minecraft.realtime.commands.RealtimeCommand;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRule;
 import org.bukkit.World;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -23,10 +19,12 @@ public class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("realtime")).setExecutor(new RealtimeCommand());
         Objects.requireNonNull(getCommand("gettime")).setExecutor(new GetTimeCommand());
         plugin = this;
-        this.saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
 
+        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {  //是否有安裝插件PlaceholderAPI
+            new RealTimePlaceholder().register();
         }
+
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, () -> {
             //獲取config文件中的需要同步時間的世界名稱
             List<String> worlds = Main.super.getConfig().getStringList("world");
