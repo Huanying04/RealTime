@@ -17,7 +17,7 @@ public class RealTimePlaceholder extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-        return "1.0.1.2";
+        return "1.0.1.3";
     }
 
     public String onPlaceholderRequest(Player player, String identifier) {
