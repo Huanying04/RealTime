@@ -47,3 +47,6 @@ Reload插件。
 啟用玩家所在世界同步時間功能。
 ### /realtime world removethisworld
 禁用玩家所在世界同步時間功能。
+
+# Placeholder API
+`%realtime_timezone%` - 現在設定的時區。
