@@ -34,7 +34,16 @@ public class TimezoneUtils {
         Calendar c2 = Calendar.getInstance(TimeZone.getTimeZone(timezone2));
         int dayInYear1 = c1.get(Calendar.DAY_OF_YEAR);
         int dayInYear2 = c2.get(Calendar.DAY_OF_YEAR);
-        return dayInYear2 - dayInYear1;
+        int between = dayInYear2 - dayInYear1;
+
+        //可能相隔一年
+        if (between == 1 - 365 || between == 1 - 366) {  //timezone1為第二年的一日，timezone2為第一年最後一日，後減前為-1
+            between = -1;
+        }else if (between == 365 - 1 || between == 366 - 1) {  //timezone1為第一年最後一日，timezone2為第二年的一日，後減前為1
+            between = 1;
+        }
+
+        return between;
     }
 
 }

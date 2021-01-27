@@ -15,10 +15,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.time.DateTimeException;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 public class RealtimeCommand implements CommandExecutor, TabExecutor {
     @Override
@@ -43,7 +40,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                         //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
                         if (world == null)
                             continue;
-                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000);
+                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000L);
                     }
                 }
                 sender.sendMessage("reload完畢！");
@@ -76,7 +73,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                         //如果沒有這個世界，則為null，剩下直接跳到下一個迴圈
                                         if (world == null)
                                             continue;
-                                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000);
+                                        world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000L);
                                     }
                                 }
                                 //發送message給sender
@@ -108,10 +105,14 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     return true;
                                 }
 
-                                worlds.add(args[2]);
-                                Main.plugin.getConfig().set("world", worlds);
-                                Main.plugin.saveConfig();
-                                sender.sendMessage("已啟用世界 " + args[2]);
+                                if (!worlds.contains(args[2])) {
+                                    worlds.add(args[2]);
+                                    Main.plugin.getConfig().set("world", worlds);
+                                    Main.plugin.saveConfig();
+                                    sender.sendMessage("已啟用世界 " + args[2]);
+                                }else {
+                                    sender.sendMessage(ChatColor.RED + "世界 " + args[2] + " 已啟用");
+                                }
                             } else {  //args(指令參數)沒有大於等於3(相當於小於3 )
                                 sender.sendMessage(ChatColor.RED + "用法: /realtime world set <世界名>");
                             }
@@ -142,7 +143,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     Main.plugin.getConfig().set("world", worlds);
                                     Main.plugin.saveConfig();
                                     sender.sendMessage("已啟用世界 " + locateWorld.getName());
-                                } else {
+                                }else {
                                     sender.sendMessage(ChatColor.RED + "世界 " + locateWorld.getName() + " 已啟用");
                                 }
                             } else {
@@ -181,6 +182,16 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
     @Override
     public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length >= 3) {
+            if (args[1].equals("add") && args[0].equals("world")) {
+                List<String> worldNames = new ArrayList<>();
+                List<World> worlds = Bukkit.getWorlds();
+                for (World w: worlds) {
+                    worldNames.add(w.getName());
+                }
+                return worldNames;
+            }else if (args[1].equals("remove") && args[0].equals("world")) {
+                return Main.plugin.getConfig().getStringList("world");
+            }
             return Collections.emptyList();
         }
         if (args.length == 2) {
