@@ -50,3 +50,6 @@ Reload插件。
 
 # Placeholder API
 `%realtime_timezone%` - 現在設定的時區。
+
+# 介紹影片
+[![我讓Minecraft跟現實世界的時間同步了。](https://img.youtube.com/vi/4lTVCK_uFb0/0.jpg)](https://www.youtube.com/watch?v=4lTVCK_uFb0)
