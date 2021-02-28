@@ -1,5 +1,6 @@
 package net.nekomura.minecraft.realtime.commands;
 
+import net.nekomura.minecraft.realtime.lang.Message;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,7 +17,7 @@ public class GetTimeCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("realtime.gettime")) {
-            sender.sendMessage(ChatColor.RED + "你沒有使用此指令的權限。");
+            sender.sendMessage(Message.getTranslatedString("no-permission"));
         }else {
             Player player = (Player)sender;
             player.sendMessage("time: " + player.getWorld().getTime() + "\n" +

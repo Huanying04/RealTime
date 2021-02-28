@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RealTime:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RealTime_jar</output-path>
+    <root id="archive" name="RealTime.jar">
+      <element id="module-output" name="RealTime" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20200518/json-20200518.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/jetbrains/annotations/13.0/annotations-13.0.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -2,8 +2,10 @@ package net.nekomura.minecraft.realtime.commands;
 
 import net.nekomura.minecraft.realtime.Main;
 import net.nekomura.minecraft.realtime.TimezoneUtils;
+import net.nekomura.minecraft.realtime.lang.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.time.DateTimeException;
 import java.time.ZoneId;
 import java.util.*;
@@ -21,7 +24,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!sender.hasPermission("realtime.admin")) {  //如果沒有realtime.admin權限
-            sender.sendMessage(ChatColor.RED + "你沒有使用此指令的權限。");
+            sender.sendMessage(Message.getTranslatedString("no-permission"));
             return true;
         }else {  //有realtime.admin權限
             if (args.length == 0) {  //如果args長度為零，也就是指令只有/realtime
@@ -43,7 +46,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                         world.setFullTime(world.getFullTime() + TimezoneUtils.dayBetween(oldTimezone, newTimezone) * 24000L);
                     }
                 }
-                sender.sendMessage("reload完畢！");
+                sender.sendMessage(Message.getTranslatedString("reloaded"));
                 return true;
             }else if (args[0].equals("timezone")) {
                 if (args.length >= 2) {
@@ -77,20 +80,20 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     }
                                 }
                                 //發送message給sender
-                                sender.sendMessage(String.format("已將時區由%s改為%s！", oldTimezone, newTimezone));
+                                sender.sendMessage(Message.getTranslatedString("timezone-changed", oldTimezone, newTimezone));
                             }else {  //不是可用時區
-                                sender.sendMessage(ChatColor.RED + "錯誤的時區！");
+                                sender.sendMessage(Message.getTranslatedString("invalid-timezone"));
                             }
                         }else {  //args(指令參數)沒有大於等於2(相當於小於2 )
-                            sender.sendMessage(ChatColor.RED + "用法: /realtime timezone set <時區>");
+                            sender.sendMessage(Message.getTranslatedString("timezone-set-usage"));
                         }
                         return true;
                     }else if (args[1].equals("get")) {
-                        sender.sendMessage("現在的時區為" + Main.plugin.getConfig().getString("timezone"));
+                        sender.sendMessage(Message.getTranslatedString("current-timezone", Main.plugin.getConfig().getString("timezone")));
                         return true;
                     }
                 }else {
-                    sender.sendMessage("用法: /realtime timezone set <args> 或 /realtime timezone get");
+                    sender.sendMessage(Message.getTranslatedString("timezone-usage"));
                     return true;
                 }
             }else if (args[0].equals("world")) {
@@ -101,7 +104,7 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                 List<String> worlds = Main.plugin.getConfig().getStringList("world");  //獲取啟用RealTime功能的世界
 
                                 if (Bukkit.getWorld(args[2]) == null) {
-                                    sender.sendMessage(ChatColor.RED + "世界 " + args[2] + " 不存在");
+                                    sender.sendMessage(Message.getTranslatedString("world-not-exist", args[2]));
                                     return true;
                                 }
 
@@ -109,12 +112,12 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     worlds.add(args[2]);
                                     Main.plugin.getConfig().set("world", worlds);
                                     Main.plugin.saveConfig();
-                                    sender.sendMessage("已啟用世界 " + args[2]);
+                                    sender.sendMessage(Message.getTranslatedString("enabled-world", args[2]));
                                 }else {
-                                    sender.sendMessage(ChatColor.RED + "世界 " + args[2] + " 已啟用");
+                                    sender.sendMessage(Message.getTranslatedString("world-already-enabled", args[2]));
                                 }
                             } else {  //args(指令參數)沒有大於等於3(相當於小於3 )
-                                sender.sendMessage(ChatColor.RED + "用法: /realtime world set <世界名>");
+                                sender.sendMessage(Message.getTranslatedString("timezone-world-set-usage", args[2]));
                             }
                             return true;
                         case "remove":
@@ -124,9 +127,10 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     worlds.remove(args[2]);
                                     Main.plugin.getConfig().set("world", worlds);
                                     Main.plugin.saveConfig();
-                                    sender.sendMessage("已禁用世界 " + args[2]);
+                                    Bukkit.getWorld(args[2]).setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+                                    sender.sendMessage(Message.getTranslatedString("disabled-world", args[2]));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "世界 " + args[2] + " 未啟用");
+                                    sender.sendMessage(Message.getTranslatedString("world-had-not-been-enabled", args[2]));
                                 }
                                 return true;
                             }
@@ -142,12 +146,12 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     worlds.add(locateWorld.getName());
                                     Main.plugin.getConfig().set("world", worlds);
                                     Main.plugin.saveConfig();
-                                    sender.sendMessage("已啟用世界 " + locateWorld.getName());
+                                    sender.sendMessage(Message.getTranslatedString("enabled-world", locateWorld.getName()));
                                 }else {
-                                    sender.sendMessage(ChatColor.RED + "世界 " + locateWorld.getName() + " 已啟用");
+                                    sender.sendMessage(Message.getTranslatedString("world-already-enabled", locateWorld.getName()));
                                 }
                             } else {
-                                sender.sendMessage(ChatColor.RED + "必須是玩家才能使用此指令！");
+                                sender.sendMessage(Message.getTranslatedString("player-only-command"));
                             }
                             return true;
                         case "removethisworld":
@@ -161,17 +165,26 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
                                     worlds.remove(locateWorld.getName());
                                     Main.plugin.getConfig().set("world", worlds);
                                     Main.plugin.saveConfig();
-                                    sender.sendMessage("已禁用世界 " + locateWorld.getName());
+                                    locateWorld.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, true);
+                                    sender.sendMessage(Message.getTranslatedString("disabled-world", locateWorld.getName()));
                                 } else {
-                                    sender.sendMessage(ChatColor.RED + "世界 " + locateWorld.getName() + " 未啟用");
+                                    sender.sendMessage(Message.getTranslatedString("world-had-not-been-enabled", locateWorld.getName()));
                                 }
                             } else {
-                                sender.sendMessage(ChatColor.RED + "必須是玩家才能使用此指令！");
+                                sender.sendMessage(Message.getTranslatedString("player-only-command"));
                             }
                             return true;
                     }
                 }else {
                     return false;
+                }
+            }else if (args[0].equals("language")) {
+                if (args.length == 2) {
+                    Main.plugin.getConfig().set("lang", args[1]);
+                    sender.sendMessage(Message.getTranslatedString("language-set", args[1]));
+                    return true;
+                }else {
+                    sender.sendMessage(Message.getTranslatedString("language-cmd-usage"));
                 }
             }
         }
@@ -203,10 +216,18 @@ public class RealtimeCommand implements CommandExecutor, TabExecutor {
             }else if (args[0].equalsIgnoreCase("world")) {
                 String[] list = {"add", "remove", "addthisworld", "removethisworld"};
                 return Arrays.asList(list);
+            }else if (args[0].equalsIgnoreCase("language")) {
+                File langDir = new File(Main.plugin.getDataFolder(), "langs");
+                String[] files = langDir.list((dir1, name) -> name.toLowerCase().endsWith(".yml"));
+                String[] lang = new String[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    lang[i]  = files[i].substring(0, files[i].length() - 4);
+                }
+                return Arrays.asList(lang);
             }
         }
         if (args.length == 1) {
-            String[] list = {"reload", "timezone", "world"};
+            String[] list = {"reload", "timezone", "world", "language"};
             return Arrays.asList(list);
         }
         return null;

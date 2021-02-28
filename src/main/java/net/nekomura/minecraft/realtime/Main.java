@@ -19,7 +19,9 @@ public class Main extends JavaPlugin {
         Objects.requireNonNull(getCommand("realtime")).setExecutor(new RealtimeCommand());
         Objects.requireNonNull(getCommand("gettime")).setExecutor(new GetTimeCommand());
         plugin = this;
-        saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
+        this.saveDefaultConfig();  //如果config文件不存在則儲存預設config.yml
+        this.saveResource("langs/en_us.yml", true);
+        this.saveResource("langs/zh_tw.yml", true);
 
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {  //是否有安裝插件PlaceholderAPI
             new RealTimePlaceholder().register();

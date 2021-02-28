@@ -1,6 +1,6 @@
 name: RealTime
 main: net.nekomura.minecraft.realtime.Main
-version: 1.0.1.4
+version: 1.0.2.0
 description: Set Minecraft Time as Real Current Time.
 author: 貓村幻影
 softdepend: [PlaceholderAPI]
